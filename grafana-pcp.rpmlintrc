@@ -1,0 +1,6 @@
+addFilter("W: spelling-error %description -l en_US datasources -> .*")
+addFilter("W: spelling-error %description -l en_US pmseries -> .*")
+addFilter("W: spelling-error %description -l en_US bpftrace -> .*")
+
+addFilter("W: strange-permission create_dependency_bundle.sh 755")
+addFilter("W: invalid-url Source1: grafana-pcp-deps-.*")
