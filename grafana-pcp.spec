@@ -1,7 +1,7 @@
 Name:           grafana-pcp
-Version:        0.0.7
+Version:        1.0.0
 Release:        1%{?dist}
-Summary:        Performance Co-Pilot App for Grafana
+Summary:        Performance Co-Pilot Grafana Plugin
 
 %global         github https://github.com/performancecopilot/grafana-pcp
 %global         install_dir %{_sharedstatedir}/grafana/plugins/grafana-pcp
@@ -17,9 +17,17 @@ Source1:        grafana-pcp-deps-%{version}.tar.xz
 Source2:        create_dependency_bundle.sh
 
 BuildRequires:  nodejs
-Requires:       pcp >= 4.3.4
 Requires:       grafana >= 6.2.2
-Suggests:       redis >= 5.0.4
+Suggests:       pcp >= 5.0.0
+Suggests:       redis >= 5.0.0
+Suggests:       bpftrace >= 0.9.2
+
+# Obsolete old webapps
+Obsoletes:	pcp-webjs
+Obsoletes:	pcp-webapp-blinkenlights
+Obsoletes:	pcp-webapp-grafana
+Obsoletes:	pcp-webapp-graphite
+Obsoletes:	pcp-webapp-vector
 
 # Bundled npm packages
 Provides: bundled(nodejs-@babel/cli) = 7.5.5
@@ -62,7 +70,8 @@ Provides: bundled(nodejs-webpack-cli) = 3.3.6
 
 %description
 This Grafana plugin for Performance Co-Pilot includes datasources for
-pmseries, live metrics and the bpftrace PMDA, and several example dashboards.
+scalable time series from pmseries(1) and Redis, live PCP metrics and
+bpftrace scripts from pmdabpftrace(1), as well as several dashboards.
 
 %prep
 %setup -q
