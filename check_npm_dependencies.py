@@ -2,6 +2,7 @@
 import sys
 import tarfile
 import json
+import os.path
 
 def read_spec_provides(spec_path):
     with open(spec_path) as f:
@@ -10,18 +11,18 @@ def read_spec_provides(spec_path):
                 yield line.strip()
 
 def read_node_deps(source_archive_path):
-    root_dir = source_archive_path[:-len('.tar.gz')]
+    root_dir = os.path.basename(source_archive_path)[:-len('.tar.gz')]
     with tarfile.open(source_archive_path) as tar:
-        f = tar.extractfile('{}/package.json'.format(root_dir))
+        f = tar.extractfile(f'{root_dir}/package.json')
         package_json = json.load(f)
         return list(package_json['devDependencies'].keys()) + list(package_json['dependencies'].keys())
 
 def read_node_deps_versions(dep_bundle_path, dependencies):
     with tarfile.open(dep_bundle_path) as tar:
         for dependency in dependencies:
-            f = tar.extractfile('node_modules/{}/package.json'.format(dependency))
+            f = tar.extractfile(f'node_modules/{dependency}/package.json')
             package_json = json.load(f)
-            yield 'Provides: bundled(nodejs-{}) = {}'.format(package_json["name"], package_json["version"])
+            yield f'Provides: bundled(nodejs-{package_json["name"]}) = {package_json["version"]}'
 
 if __name__ == '__main__':
     if len(sys.argv) != 4:

@@ -33,25 +33,32 @@ Obsoletes:	pcp-webapp-vector
 Provides: bundled(nodejs-@babel/cli) = 7.5.5
 Provides: bundled(nodejs-@babel/core) = 7.5.5
 Provides: bundled(nodejs-@babel/preset-env) = 7.5.5
+Provides: bundled(nodejs-@babel/preset-react) = 7.0.0
 Provides: bundled(nodejs-@babel/preset-typescript) = 7.3.3
+Provides: bundled(nodejs-@grafana/data) = 6.4.0
+Provides: bundled(nodejs-@grafana/ui) = 6.4.0
 Provides: bundled(nodejs-@types/benchmark) = 1.0.31
+Provides: bundled(nodejs-@types/d3) = 5.7.2
 Provides: bundled(nodejs-@types/grafana) = 4.6.3
-Provides: bundled(nodejs-@types/jest) = 23.3.14
+Provides: bundled(nodejs-@types/jest) = 24.0.17
 Provides: bundled(nodejs-@types/lodash) = 4.14.136
 Provides: bundled(nodejs-babel-jest) = 24.8.0
 Provides: bundled(nodejs-babel-loader) = 8.0.6
+Provides: bundled(nodejs-babel-plugin-angularjs-annotate) = 0.10.0
 Provides: bundled(nodejs-benchmark) = 2.1.4
 Provides: bundled(nodejs-clean-webpack-plugin) = 0.1.19
 Provides: bundled(nodejs-copy-webpack-plugin) = 4.6.0
 Provides: bundled(nodejs-core-js) = 3.1.4
 Provides: bundled(nodejs-css-loader) = 1.0.1
+Provides: bundled(nodejs-d3-flame-graph) = 2.1.2
+Provides: bundled(nodejs-d3-selection) = 1.4.0
 Provides: bundled(nodejs-expr-eval) = 1.2.3
 Provides: bundled(nodejs-jest) = 24.8.0
 Provides: bundled(nodejs-jest-date-mock) = 1.0.7
 Provides: bundled(nodejs-jsdom) = 9.12.0
 Provides: bundled(nodejs-lodash) = 4.17.15
+Provides: bundled(nodejs-memoize-one) = 5.1.1
 Provides: bundled(nodejs-mocha) = 6.2.0
-Provides: bundled(nodejs-ng-annotate-webpack-plugin) = 0.3.0
 Provides: bundled(nodejs-prunk) = 1.3.1
 Provides: bundled(nodejs-q) = 1.5.1
 Provides: bundled(nodejs-regenerator-runtime) = 0.12.1
@@ -95,6 +102,20 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Fri Oct 11 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.0-1
+- bpftrace: support for Flame Graphs
+- bpftrace: context-sensitive auto completion for bpftrace probes, builtin variables and functions incl. help texts
+- bpftrace: parse output of bpftrace scripts (e.g. using `printf()`) as CSV and display it in the Grafana table panel
+- bpftrace: sample dashboards (BPFtrace System Analysis, BPFtrace Flame Graphs)
+- vector: table output: show instance name in left column
+- vector: table output: support non-matching instance names (cells of metrics which don't have the specific instance will be blank)
+- vector & bpftrace: if the metric/script gets changed in the query editor, immeditately stop polling the old metric/deregister the old script
+- vector & bpftrace: improve pmwebd compatibility
+- misc: help texts for all datasources (visible with the **[ ? ]** button in the query editor)
+- misc: renamed PCP Live to PCP Vector
+- misc: logos for all datasources
+- misc: improved error handling
+
 * Fri Aug 16 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 0.0.7-1
 - converted into a Grafana app plugin, renamed to grafana-pcp
 - redis: support for instance domains, labels, autocompletion, automatic rate conversation
