@@ -17,7 +17,7 @@ Source1:        grafana-pcp-deps-%{version}.tar.xz
 Source2:        create_dependency_bundle.sh
 
 BuildRequires:  nodejs
-Requires:       grafana >= 6.2.2
+Requires:       grafana >= 6.2.2, grafana < 6.4.0
 Suggests:       pcp >= 5.0.0
 Suggests:       redis >= 5.0.0
 Suggests:       bpftrace >= 0.9.2
