@@ -1,5 +1,5 @@
 Name:           grafana-pcp
-Version:        1.0.0
+Version:        1.0.2
 Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
@@ -102,6 +102,16 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Tue Nov 12 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.2-1
+- handle counter wraps (overflows)
+- convert time based counters to time utilization
+- flame graphs: aggregate stack counts by selected time range in the Grafana UI
+- flame graphs: add option to hide idle stacks
+- vector: fix container dropdown in query editor
+- vector: remove container setting from datasource settings page
+- redis: fix value transformations (e.g. rate conversation of counters)
+- request more datapoints from the datasource to fill the borders of the graph panel
+
 * Fri Oct 11 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.0-1
 - bpftrace: support for Flame Graphs
 - bpftrace: context-sensitive auto completion for bpftrace probes, builtin variables and functions incl. help texts

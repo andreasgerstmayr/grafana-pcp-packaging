@@ -1,6 +1,4 @@
 /grafana-pcp-*.tar.gz
-/grafana-pcp-*.rpm
 /grafana-pcp-deps-*.tar.xz
-/grafana-pcp-*/
-/noarch/
-.build-*.log
+/grafana-pcp-*.src.rpm
+/results_grafana-pcp/
