@@ -1,5 +1,5 @@
 Name:           grafana-pcp
-Version:        1.0.2
+Version:        1.0.3
 Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
@@ -102,6 +102,9 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Tue Nov 26 2019 Nathan Scott <nathans@redhat.com> 1.0.3-1
+- fix flame graph dependency (flamegraph.destroy error in javascript console)
+
 * Tue Nov 12 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.2-1
 - handle counter wraps (overflows)
 - convert time based counters to time utilization
