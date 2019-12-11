@@ -1,5 +1,5 @@
 Name:           grafana-pcp
-Version:        1.0.3
+Version:        1.0.4
 Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
@@ -50,7 +50,7 @@ Provides: bundled(nodejs-clean-webpack-plugin) = 0.1.19
 Provides: bundled(nodejs-copy-webpack-plugin) = 4.6.0
 Provides: bundled(nodejs-core-js) = 3.1.4
 Provides: bundled(nodejs-css-loader) = 1.0.1
-Provides: bundled(nodejs-d3-flame-graph) = 2.1.2
+Provides: bundled(nodejs-d3-flame-graph) = 2.1.8
 Provides: bundled(nodejs-d3-selection) = 1.4.0
 Provides: bundled(nodejs-expr-eval) = 1.2.3
 Provides: bundled(nodejs-jest) = 24.8.0
@@ -70,7 +70,6 @@ Provides: bundled(nodejs-tslint) = 5.18.0
 Provides: bundled(nodejs-tslint-config-airbnb) = 5.11.1
 Provides: bundled(nodejs-typescript) = 3.5.3
 Provides: bundled(nodejs-uglifyjs-webpack-plugin) = 2.2.0
-Provides: bundled(nodejs-weak) = 1.0.1
 Provides: bundled(nodejs-webpack) = 4.39.1
 Provides: bundled(nodejs-webpack-cli) = 3.3.6
 
@@ -102,6 +101,12 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Wed Dec 11 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.4-1
+- flame graphs: clean flame graph stacks every 5s (reduces CPU load)
+- general: implement PCP version checks
+- build: remove weak dependency (doesn't work with Node.js 12)
+- build: upgrade terser-webpack-plugin to mitigate XSS vulnerability in the serialize-javascript transitive dependency
+
 * Tue Nov 26 2019 Nathan Scott <nathans@redhat.com> 1.0.3-1
 - fix flame graph dependency (flamegraph.destroy error in javascript console)
 

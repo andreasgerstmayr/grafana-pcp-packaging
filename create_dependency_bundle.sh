@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-VER="${1:?Usage: $0 version destination}"
-DEST="${2:?Usage: $0 version destination}"
+SRC="${1:?Usage: $0 source destination}"
+DEST="${2:?Usage: $0 source destination}"
 
 if [ -f "$DEST" ]; then
     echo "File $DEST exists already."
@@ -10,9 +10,8 @@ if [ -f "$DEST" ]; then
 fi
 
 pushd $(mktemp -d)
-wget https://github.com/performancecopilot/grafana-pcp/archive/v$VER/grafana-pcp-$VER.tar.gz
-tar xfz grafana-pcp-$VER.tar.gz
-cd grafana-pcp-$VER
+tar xfz $SRC
+cd grafana-pcp-*
 yarn install
 echo "Compressing..."
 XZ_OPT=-9 tar cJf $DEST node_modules
