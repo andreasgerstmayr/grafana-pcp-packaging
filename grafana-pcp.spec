@@ -1,6 +1,6 @@
 Name:           grafana-pcp
 Version:        1.0.4
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
 %global         github https://github.com/performancecopilot/grafana-pcp
@@ -23,11 +23,11 @@ Suggests:       redis >= 5.0.0
 Suggests:       bpftrace >= 0.9.2
 
 # Obsolete old webapps
-Obsoletes:	pcp-webjs
-Obsoletes:	pcp-webapp-blinkenlights
-Obsoletes:	pcp-webapp-grafana
-Obsoletes:	pcp-webapp-graphite
-Obsoletes:	pcp-webapp-vector
+Obsoletes: pcp-webjs
+Obsoletes: pcp-webapp-blinkenlights
+Obsoletes: pcp-webapp-grafana
+Obsoletes: pcp-webapp-graphite
+Obsoletes: pcp-webapp-vector
 
 # Bundled npm packages
 Provides: bundled(nodejs-@babel/cli) = 7.5.5
@@ -87,6 +87,9 @@ bpftrace scripts from pmdabpftrace(1), as well as several dashboards.
 rm -rf dist
 ./node_modules/webpack/bin/webpack.js --config webpack.config.prod.js
 
+# webpack/copy-webpack-plugin sometimes outputs files with mode = 666 due to reasons unknown (race condition/umask issue afaics)
+chmod -Rf a+rX,u+w,g-w,o-w dist
+
 %check
 ./node_modules/jest/bin/jest.js --silent
 
@@ -101,6 +104,9 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Thu Dec 12 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.4-2
+- remove node_modules/node-notifier directory from webpack (due to licensing issues)
+
 * Wed Dec 11 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.4-1
 - flame graphs: clean flame graph stacks every 5s (reduces CPU load)
 - general: implement PCP version checks
