@@ -1,19 +1,31 @@
-#!/bin/sh -eux
+#!/bin/sh -eu
 
-SRC="${1:?Usage: $0 source destination}"
-DEST="${2:?Usage: $0 source destination}"
+SRC=$(readlink -f "${1:?Usage: $0 source destination}")
+DEST=$(readlink -f "${2:?Usage: $0 source destination}")
 
 if [ -f "$DEST" ]; then
     echo "File $DEST exists already."
     exit 0
 fi
-
+if [ "$#" -gt 2 ]; then
+    PATCHES=$(readlink -f "${@:3}")
+else
+    PATCHES=""
+fi
 
 pushd $(mktemp -d)
 
-echo Installing dependencies...
+echo Extracting sources...
 tar xfz $SRC
 cd grafana-pcp-*
+
+echo Applying patches...
+for patch in $PATCHES
+do
+    patch -p1 < $patch
+done
+
+echo Installing dependencies...
 yarn install
 
 echo Removing files with licensing issues...

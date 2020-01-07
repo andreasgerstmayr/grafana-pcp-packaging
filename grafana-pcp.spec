@@ -1,6 +1,6 @@
 Name:           grafana-pcp
-Version:        1.0.4
-Release:        2%{?dist}
+Version:        1.0.6
+Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
 %global         github https://github.com/performancecopilot/grafana-pcp
@@ -47,7 +47,7 @@ Provides: bundled(nodejs-babel-loader) = 8.0.6
 Provides: bundled(nodejs-babel-plugin-angularjs-annotate) = 0.10.0
 Provides: bundled(nodejs-benchmark) = 2.1.4
 Provides: bundled(nodejs-clean-webpack-plugin) = 0.1.19
-Provides: bundled(nodejs-copy-webpack-plugin) = 4.6.0
+Provides: bundled(nodejs-copy-webpack-plugin) = 5.1.1
 Provides: bundled(nodejs-core-js) = 3.1.4
 Provides: bundled(nodejs-css-loader) = 1.0.1
 Provides: bundled(nodejs-d3-flame-graph) = 2.1.8
@@ -69,7 +69,6 @@ Provides: bundled(nodejs-ts-loader) = 4.5.0
 Provides: bundled(nodejs-tslint) = 5.18.0
 Provides: bundled(nodejs-tslint-config-airbnb) = 5.11.1
 Provides: bundled(nodejs-typescript) = 3.5.3
-Provides: bundled(nodejs-uglifyjs-webpack-plugin) = 2.2.0
 Provides: bundled(nodejs-webpack) = 4.39.1
 Provides: bundled(nodejs-webpack-cli) = 3.3.6
 
@@ -104,6 +103,14 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Tue Jan 07 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.6-1
+- redis: support wildcards in metric names
+- redis: fix label support
+- redis: fix legends
+- redis: set default sample interval to 60s (fixes empty graph borders)
+- build: upgrade copy-webpack-plugin to mitigate XSS vulnerability in the serialize-javascript transitive dependency
+- build: remove deprecated uglify-webpack-plugin
+
 * Thu Dec 12 2019 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.4-2
 - remove node_modules/node-notifier directory from webpack (due to licensing issues)
 
