@@ -1,6 +1,6 @@
 Name:           grafana-pcp
 Version:        1.0.6
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
 %global         github https://github.com/performancecopilot/grafana-pcp
@@ -103,6 +103,9 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Wed Jan 29 2020 Fedora Release Engineering <releng@fedoraproject.org> - 1.0.6-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_32_Mass_Rebuild
+
 * Tue Jan 07 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.6-1
 - redis: support wildcards in metric names
 - redis: fix label support
