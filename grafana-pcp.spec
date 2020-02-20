@@ -23,11 +23,11 @@ Suggests:       redis >= 5.0.0
 Suggests:       bpftrace >= 0.9.2
 
 # Obsolete old webapps
-Obsoletes: pcp-webjs
-Obsoletes: pcp-webapp-blinkenlights
-Obsoletes: pcp-webapp-grafana
-Obsoletes: pcp-webapp-graphite
-Obsoletes: pcp-webapp-vector
+Obsoletes: pcp-webjs <= 4.3.4
+Obsoletes: pcp-webapp-blinkenlights <= 4.3.4
+Obsoletes: pcp-webapp-grafana <= 4.3.4
+Obsoletes: pcp-webapp-graphite <= 4.3.4
+Obsoletes: pcp-webapp-vector <= 4.3.4
 
 # Bundled npm packages
 Provides: bundled(nodejs-@babel/cli) = 7.8.4
@@ -109,7 +109,7 @@ cp -a dist/* %{buildroot}/%{install_dir}
 - vector, bpftrace: change datasource check box to red if URL is inaccessible
 - redis: add tests
 - flame graphs: support multidimensional eBPF maps (required to display e.g. the process name)
-- dashboards: remove BCC metrics from Vector host overview (because the BCC PMDA isn't installed by default)
+- dashboards: remove BCC metrics from Vector host overview (because the BCC PMDA is not installed by default)
 - misc: update dependencies
 - build: fix production build (implement workaround for https://github.com/systemjs/systemjs/issues/2117, https://github.com/grafana/grafana/issues/21785)
 
