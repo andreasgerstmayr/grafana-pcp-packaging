@@ -4,7 +4,7 @@ The grafana-pcp package
 
 ## Build instructions
 ```
-VER=1.0.7
+VER=2.0.1
 spectool -g grafana-pcp.spec
 ./create_dependency_bundle.sh grafana-pcp-$VER.tar.gz grafana-pcp-deps-$VER.tar.xz
 ./check_npm_dependencies.py grafana-pcp.spec grafana-pcp-$VER.tar.gz grafana-pcp-deps-$VER.tar.xz

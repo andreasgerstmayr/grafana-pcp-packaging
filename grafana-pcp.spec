@@ -1,5 +1,5 @@
 Name:           grafana-pcp
-Version:        1.0.7
+Version:        2.0.1
 Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
@@ -17,7 +17,7 @@ Source1:        grafana-pcp-deps-%{version}.tar.xz
 Source2:        create_dependency_bundle.sh
 
 BuildRequires:  nodejs
-Requires:       grafana >= 6.2.2, grafana < 6.4.0
+Requires:       grafana >= 6.6.0
 Suggests:       pcp >= 5.0.0
 Suggests:       redis >= 5.0.0
 Suggests:       bpftrace >= 0.9.2
@@ -30,47 +30,47 @@ Obsoletes: pcp-webapp-graphite
 Obsoletes: pcp-webapp-vector
 
 # Bundled npm packages
-Provides: bundled(nodejs-@babel/cli) = 7.5.5
-Provides: bundled(nodejs-@babel/core) = 7.5.5
-Provides: bundled(nodejs-@babel/preset-env) = 7.5.5
-Provides: bundled(nodejs-@babel/preset-react) = 7.0.0
-Provides: bundled(nodejs-@babel/preset-typescript) = 7.3.3
-Provides: bundled(nodejs-@grafana/data) = 6.4.0
-Provides: bundled(nodejs-@grafana/ui) = 6.4.0
+Provides: bundled(nodejs-@babel/cli) = 7.8.4
+Provides: bundled(nodejs-@babel/core) = 7.8.4
+Provides: bundled(nodejs-@babel/preset-env) = 7.8.4
+Provides: bundled(nodejs-@babel/preset-react) = 7.8.3
+Provides: bundled(nodejs-@babel/preset-typescript) = 7.8.3
+Provides: bundled(nodejs-@grafana/data) = 6.6.0
+Provides: bundled(nodejs-@grafana/ui) = 6.6.0
 Provides: bundled(nodejs-@types/benchmark) = 1.0.31
 Provides: bundled(nodejs-@types/d3) = 5.7.2
 Provides: bundled(nodejs-@types/grafana) = 4.6.3
-Provides: bundled(nodejs-@types/jest) = 24.0.17
-Provides: bundled(nodejs-@types/lodash) = 4.14.136
-Provides: bundled(nodejs-babel-jest) = 24.8.0
+Provides: bundled(nodejs-@types/jest) = 24.9.1
+Provides: bundled(nodejs-@types/lodash) = 4.14.149
+Provides: bundled(nodejs-babel-jest) = 24.9.0
 Provides: bundled(nodejs-babel-loader) = 8.0.6
 Provides: bundled(nodejs-babel-plugin-angularjs-annotate) = 0.10.0
 Provides: bundled(nodejs-benchmark) = 2.1.4
 Provides: bundled(nodejs-clean-webpack-plugin) = 0.1.19
 Provides: bundled(nodejs-copy-webpack-plugin) = 5.1.1
-Provides: bundled(nodejs-core-js) = 3.1.4
+Provides: bundled(nodejs-core-js) = 3.6.4
 Provides: bundled(nodejs-css-loader) = 1.0.1
-Provides: bundled(nodejs-d3-flame-graph) = 2.1.8
-Provides: bundled(nodejs-d3-selection) = 1.4.0
+Provides: bundled(nodejs-d3-flame-graph) = 2.1.9
+Provides: bundled(nodejs-d3-selection) = 1.4.1
 Provides: bundled(nodejs-expr-eval) = 1.2.3
-Provides: bundled(nodejs-jest) = 24.8.0
-Provides: bundled(nodejs-jest-date-mock) = 1.0.7
+Provides: bundled(nodejs-jest) = 24.9.0
+Provides: bundled(nodejs-jest-date-mock) = 1.0.8
 Provides: bundled(nodejs-jsdom) = 9.12.0
 Provides: bundled(nodejs-lodash) = 4.17.15
 Provides: bundled(nodejs-memoize-one) = 5.1.1
-Provides: bundled(nodejs-mocha) = 6.2.0
+Provides: bundled(nodejs-mocha) = 6.2.2
 Provides: bundled(nodejs-prunk) = 1.3.1
 Provides: bundled(nodejs-q) = 1.5.1
 Provides: bundled(nodejs-regenerator-runtime) = 0.12.1
 Provides: bundled(nodejs-request) = 2.88.0
 Provides: bundled(nodejs-style-loader) = 0.22.1
-Provides: bundled(nodejs-ts-jest) = 24.0.2
+Provides: bundled(nodejs-ts-jest) = 24.3.0
 Provides: bundled(nodejs-ts-loader) = 4.5.0
-Provides: bundled(nodejs-tslint) = 5.18.0
-Provides: bundled(nodejs-tslint-config-airbnb) = 5.11.1
-Provides: bundled(nodejs-typescript) = 3.5.3
-Provides: bundled(nodejs-webpack) = 4.39.1
-Provides: bundled(nodejs-webpack-cli) = 3.3.6
+Provides: bundled(nodejs-tslint) = 5.20.1
+Provides: bundled(nodejs-tslint-config-airbnb) = 5.11.2
+Provides: bundled(nodejs-typescript) = 3.7.5
+Provides: bundled(nodejs-webpack) = 4.41.5
+Provides: bundled(nodejs-webpack-cli) = 3.3.10
 
 
 %description
@@ -103,6 +103,16 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Thu Feb 20 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 2.0.1-1
+- support for Grafana 6.6+, drop support for Grafana < 6.6
+- vector, bpftrace: fix version checks on dashboard load (prevent multiple pmcd.version checks on dashboard load)
+- vector, bpftrace: change datasource check box to red if URL is inaccessible
+- redis: add tests
+- flame graphs: support multidimensional eBPF maps (required to display e.g. the process name)
+- dashboards: remove BCC metrics from Vector host overview (because the BCC PMDA isn't installed by default)
+- misc: update dependencies
+- build: fix production build (implement workaround for https://github.com/systemjs/systemjs/issues/2117, https://github.com/grafana/grafana/issues/21785)
+
 * Wed Jan 29 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 1.0.7-1
 - redis: fix timespec (fixes empty graphs for large time ranges)
 

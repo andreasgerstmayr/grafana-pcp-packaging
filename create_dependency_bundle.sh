@@ -1,4 +1,4 @@
-#!/bin/sh -eu
+#!/bin/bash -eu
 
 SRC=$(readlink -f "${1:?Usage: $0 source destination}")
 DEST=$(readlink -f "${2:?Usage: $0 source destination}")
