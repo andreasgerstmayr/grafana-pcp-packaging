@@ -13,10 +13,10 @@ else
     PATCHES=""
 fi
 
-pushd $(mktemp -d)
+pushd "$(mktemp -d)"
 
 echo Extracting sources...
-tar xfz $SRC
+tar xfz "$SRC"
 cd grafana-pcp-*
 
 echo Applying patches...
@@ -32,6 +32,6 @@ echo Removing files with licensing issues...
 rm -rf node_modules/node-notifier
 
 echo Compressing...
-XZ_OPT=-9 tar cJf $DEST node_modules
+XZ_OPT=-9 tar cJf "$DEST" node_modules
 
 popd
