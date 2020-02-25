@@ -1,5 +1,5 @@
 Name:           grafana-pcp
-Version:        2.0.1
+Version:        2.0.2
 Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
@@ -103,6 +103,9 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Tue Feb 25 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 2.0.2-1
+- vector, redis: remove autocompletion cache (PCP metrics can be added and removed dynamically)
+
 * Thu Feb 20 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 2.0.1-1
 - support for Grafana 6.6+, drop support for Grafana < 6.6
 - vector, bpftrace: fix version checks on dashboard load (prevent multiple pmcd.version checks on dashboard load)
