@@ -1,6 +1,6 @@
 Name:           grafana-pcp
 Version:        2.0.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 
 %global         github https://github.com/performancecopilot/grafana-pcp
@@ -103,6 +103,9 @@ cp -a dist/* %{buildroot}/%{install_dir}
 %doc README.md
 
 %changelog
+* Tue Jul 28 2020 Fedora Release Engineering <releng@fedoraproject.org> - 2.0.2-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_33_Mass_Rebuild
+
 * Tue Feb 25 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 2.0.2-1
 - vector, redis: remove autocompletion cache (PCP metrics can be added and removed dynamically)
 
