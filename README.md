@@ -1,20 +1,22 @@
 # grafana-pcp
-
 The grafana-pcp package
 
-## Build instructions
-```
-VER=2.0.2
-spectool -g grafana-pcp.spec
-./create_dependency_bundle.sh grafana-pcp-$VER.tar.gz grafana-pcp-deps-$VER.tar.xz
-./check_npm_dependencies.py grafana-pcp.spec grafana-pcp-$VER.tar.gz grafana-pcp-deps-$VER.tar.xz
-fedpkg new-sources grafana-pcp-$VER.tar.gz grafana-pcp-deps-$VER.tar.xz
+## Upgrade instructions
+(replace X.Y.Z with the new grafana-pcp version)
 
-fedpkg local
-fedpkg lint
-fedpkg mockbuild
-fedpkg scratch-build --srpm
+* update `Version`, `Release` and `%changelog` in the specfile
+* create bundles and manifest: `VER=X.Y.Z make clean all`
+* update specfile with contents of the `.manifest` file
+* run local build: `rpkg local`
+* run rpm linter: `rpkg lint -r grafana-pcp.rpmlintrc`
+* run a scratch build: `fedpkg scratch-build --srpm`
+* upload new source tarballs: `fedpkg new-sources *.tar.gz`
 
-fedpkg build
-fedpkg update
-```
+## Backporting
+* create the patch
+* declare and apply (`%prep`) the patch in the specfile
+* if the patch affects Go or Node.js dependencies, or the webpack
+  * create new tarballs and rename them to `grafana-pcp-...-X.Y.Z-R.tar.gz`
+  * update the specfile with new tarball path and contents of the `.manifest` file
+
+Note: the Makefile automatically applies all patches before creating the tarballs

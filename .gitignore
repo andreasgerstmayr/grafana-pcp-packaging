@@ -1,4 +1,5 @@
 /grafana-pcp-*.tar.gz
-/grafana-pcp-deps-*.tar.xz
-/grafana-pcp-*.src.rpm
-/results_grafana-pcp/
+/grafana-pcp-*.tar.xz
+/grafana-pcp-*.tar.xz.manifest
+/grafana-pcp-*/
+*.rpm

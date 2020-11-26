@@ -3,5 +3,4 @@ addFilter("W: spelling-error %description -l en_US pmseries -> .*")
 addFilter("W: spelling-error %description -l en_US bpftrace -> .*")
 addFilter("W: spelling-error %description -l en_US pmdabpftrace -> .*")
 
-addFilter("W: strange-permission create_dependency_bundle.sh 755")
-addFilter("W: invalid-url Source1: grafana-pcp-deps-.*")
+addFilter("W: strange-permission list_bundled_nodejs_packages.py 755")
