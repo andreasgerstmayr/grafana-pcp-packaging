@@ -10,7 +10,7 @@ The grafana-pcp package
 * run local build: `rpkg local`
 * run rpm linter: `rpkg lint -r grafana-pcp.rpmlintrc`
 * run a scratch build: `fedpkg scratch-build --srpm`
-* upload new source tarballs: `fedpkg new-sources *.tar.gz`
+* upload new source tarballs: `fedpkg new-sources *.tar.gz *.tar.xz`
 
 ## Backporting
 * create the patch

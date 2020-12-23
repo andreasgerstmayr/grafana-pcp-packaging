@@ -8,12 +8,21 @@
   end
 end}
 
-# Specify if the frontend and dashboards will be compiled as part of the build or
-# are attached as a webpack tarball (in case of an unsuitable nodejs or jsonnet version on the build system)
+# gobuild and gotest macros are defined in go-rpm-macros, which is not available on RHEL
+# definitions lifted from Fedora 34 podman.spec
+%if ! 0%{?gobuild:1}
+%define gobuild(o:) GO111MODULE=off go build -buildmode pie -compiler gc -tags="rpm_crashtraceback ${BUILDTAGS:-}" -ldflags "${LDFLAGS:-} -B 0x$(head -c20 /dev/urandom|od -An -tx1|tr -d ' \\n') -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" -a -v -x %{?**};
+%endif
+%if ! 0%{?gotest:1}
+%define gotest() GO111MODULE=off go test -buildmode pie -compiler gc -ldflags "${LDFLAGS:-} -extldflags '-Wl,-z,relro -Wl,-z,now -specs=/usr/lib/rpm/redhat/redhat-hardened-ld '" %{?**};
+%endif
+
+# Specify if the frontend and dashboards will be compiled as part of the build or are attached
+# as a webpack tarball (in case of an unsuitable nodejs or jsonnet version on the build system)
 %define compile_frontend 0
 
 Name:           grafana-pcp
-Version:        3.0.0
+Version:        3.0.1
 Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 License:        ASL 2.0
@@ -28,13 +37,11 @@ Source2:        grafana-pcp-webpack-%{version}.tar.gz
 Source3:        Makefile
 Source4:        list_bundled_nodejs_packages.py
 
-Patch1:         001-fix-test-on-32bit.patch
-
 # Intersection of go_arches and nodejs_arches
 ExclusiveArch:  %{grafanapcp_arches}
 
 BuildRequires:  systemd-rpm-macros, golang, go-srpm-macros
-%if 0%{?fedora}
+%if 0%{?fedora} >= 31
 BuildRequires:  go-rpm-macros
 %endif
 %if %{compile_frontend}
@@ -47,7 +54,7 @@ BuildRequires:  nodejs >= 1:12, nodejs < 1:13, yarnpkg, golang-github-google-jso
 
 %global         install_dir %{_sharedstatedir}/grafana/plugins/performancecopilot-pcp-app
 
-Requires:       grafana >= 7.3.3
+Requires:       grafana >= 7.3.6
 Suggests:       pcp >= 5.2.2
 Suggests:       redis >= 5.0.0
 Suggests:       bpftrace >= 0.9.2
@@ -66,21 +73,21 @@ Obsoletes: pcp-webapp-vector <= 4.3.4
 Provides: bundled(golang(github.com/grafana/grafana-plugin-sdk-go)) = 0.79.0
 Provides: bundled(golang(github.com/smartystreets/goconvey)) = 1.6.4
 Provides: bundled(npm(@babel/plugin-transform-modules-commonjs)) = 7.12.1
-Provides: bundled(npm(@grafana/data)) = 7.3.3
-Provides: bundled(npm(@grafana/runtime)) = 7.3.3
-Provides: bundled(npm(@grafana/toolkit)) = 7.3.3
-Provides: bundled(npm(@grafana/ui)) = 7.3.3
+Provides: bundled(npm(@grafana/data)) = 7.3.6
+Provides: bundled(npm(@grafana/runtime)) = 7.3.6
+Provides: bundled(npm(@grafana/toolkit)) = 7.3.6
+Provides: bundled(npm(@grafana/ui)) = 7.3.6
 Provides: bundled(npm(@types/blueimp-md5)) = 2.7.0
 Provides: bundled(npm(@types/d3-selection)) = 1.4.3
 Provides: bundled(npm(@types/enzyme)) = 3.10.5
 Provides: bundled(npm(@types/enzyme-adapter-react-16)) = 1.0.6
 Provides: bundled(npm(@types/expect-puppeteer)) = 3.3.1
 Provides: bundled(npm(@types/jest)) = 24.0.13
-Provides: bundled(npm(@types/jest-environment-puppeteer)) = 4.4.0
+Provides: bundled(npm(@types/jest-environment-puppeteer)) = 4.4.1
 Provides: bundled(npm(@types/lodash)) = 4.14.165
 Provides: bundled(npm(@types/memoize-one)) = 5.1.2
 Provides: bundled(npm(@types/react-autosuggest)) = 9.3.14
-Provides: bundled(npm(@types/react-redux)) = 7.1.11
+Provides: bundled(npm(@types/react-redux)) = 7.1.12
 Provides: bundled(npm(@types/redux)) = 3.6.0
 Provides: bundled(npm(@types/redux-persist)) = 4.3.1
 Provides: bundled(npm(@types/redux-persist-transform-filter)) = 0.0.4
@@ -97,15 +104,15 @@ Provides: bundled(npm(jest)) = 25.5.4
 Provides: bundled(npm(jest-date-mock)) = 1.0.8
 Provides: bundled(npm(jest-puppeteer)) = 4.4.0
 Provides: bundled(npm(lodash)) = 4.17.19
-Provides: bundled(npm(loglevel)) = 1.7.0
+Provides: bundled(npm(loglevel)) = 1.7.1
 Provides: bundled(npm(loglevel-plugin-prefix)) = 0.8.4
 Provides: bundled(npm(memoize-one)) = 4.1.0
 Provides: bundled(npm(monaco-editor)) = 0.20.0
-Provides: bundled(npm(monaco-editor-webpack-plugin)) = 2.0.0
+Provides: bundled(npm(monaco-editor-webpack-plugin)) = 1.9.0
 Provides: bundled(npm(prettier)) = 1.19.1
 Provides: bundled(npm(prettier-plugin-organize-imports)) = 1.1.1
 Provides: bundled(npm(puppeteer)) = 5.5.0
-Provides: bundled(npm(react-autosuggest)) = 10.0.3
+Provides: bundled(npm(react-autosuggest)) = 10.0.4
 Provides: bundled(npm(react-monaco-editor)) = 0.36.0
 Provides: bundled(npm(react-redux)) = 7.2.2
 Provides: bundled(npm(react-use)) = 15.3.4
@@ -127,8 +134,6 @@ bpftrace scripts from pmdabpftrace(1), as well as several dashboards.
 %if %{compile_frontend} == 0
 %setup -q -T -D -b 2
 %endif
-
-%patch1 -p1
 
 # Set up Go build subdir and links
 mkdir -p %{_builddir}/src/github.com/performancecopilot
@@ -185,6 +190,9 @@ export GOPATH=%{_builddir}
 
 
 %changelog
+* Wed Dec 23 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 3.0.1-1
+- update to 3.0.1 tagged upstream community sources, see CHANGELOG
+
 * Thu Nov 26 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 3.0.0-1
 - update to 3.0.0 tagged upstream community sources, see CHANGELOG
 - bundle golang dependencies and (optionally) node.js dependencies
