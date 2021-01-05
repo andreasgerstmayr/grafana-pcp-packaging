@@ -47,6 +47,7 @@ BuildRequires:  go-rpm-macros
 %if %{compile_frontend}
 BuildRequires:  nodejs >= 1:12, nodejs < 1:13, yarnpkg, golang-github-google-jsonnet
 %endif
+BuildRequires: make
 
 # omit golang debugsource, see BZ 995136 and related
 %global         dwz_low_mem_die_limit 0
