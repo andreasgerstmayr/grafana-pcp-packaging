@@ -22,7 +22,7 @@ end}
 %define compile_frontend 0
 
 Name:           grafana-pcp
-Version:        3.0.1
+Version:        3.0.2
 Release:        1%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 License:        ASL 2.0
@@ -190,6 +190,9 @@ export GOPATH=%{_builddir}
 
 
 %changelog
+* Fri Jan 22 2021 Andreas Gerstmayr <agerstmayr@redhat.com> 3.0.2-1
+- update to 3.0.2 tagged upstream community sources, see CHANGELOG
+
 * Wed Dec 23 2020 Andreas Gerstmayr <agerstmayr@redhat.com> 3.0.1-1
 - update to 3.0.1 tagged upstream community sources, see CHANGELOG
 
