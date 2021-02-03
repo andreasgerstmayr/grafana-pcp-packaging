@@ -2,7 +2,7 @@
 #
 #   Makefile of /tools/grafana-pcp/Sanity/install-and-configure
 #   Description: grafana testing via grafana testsuite
-#   Author: Michal Kolar <mkolar@redhat.com>
+#   Author: Jan Kuřík <jkurik@redhat.com>
 #
 # ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #
