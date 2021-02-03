@@ -1,0 +1,16 @@
+summary: grafana-pcp testing as grafana datasource
+description: |+
+    phantomjs excluded due to it is not available on all arches (it's no longer supported and upstream do not encourage it's use at all)
+
+contact:
+- Jan Kuřík <jkurik@redhat.com>
+component:
+- grafana-pcp
+test: ./runtest.sh
+framework: beakerlib
+recommend:
+- grafana
+- curl
+duration: 2h
+extra-summary: /tools/grafana-pcp/Sanity/install-and-configure
+extra-task: /tools/grafana-pcp/Sanity/install-and-configure
