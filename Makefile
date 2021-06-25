@@ -2,14 +2,19 @@ all: grafana-pcp-$(VER).tar.gz \
 	 grafana-pcp-vendor-$(VER).tar.xz \
 	 grafana-pcp-webpack-$(VER).tar.gz
 
-grafana-pcp-$(VER).tar.gz grafana-pcp-$(VER)/:
+grafana-pcp-$(VER).tar.gz:
 	wget https://github.com/performancecopilot/grafana-pcp/archive/v$(VER)/grafana-pcp-$(VER).tar.gz
+
+ALL_PATCHES := $(wildcard *.patch)
+PATCHES_TO_APPLY := $(ALL_PATCHES)
+
+grafana-pcp-vendor-$(VER).tar.xz: grafana-pcp-$(VER).tar.gz
 	rm -rf grafana-pcp-$(VER)
 	tar xfz grafana-pcp-$(VER).tar.gz
-	cd grafana-pcp-$(VER) && shopt -s nullglob && \
-		for patch in ../*.patch; do patch -p1 < $$patch; done
 
-grafana-pcp-vendor-$(VER).tar.xz: grafana-pcp-$(VER)/
+	# patches can affect Go or Node.js dependencies, or the webpack
+	for patch in $(PATCHES_TO_APPLY); do patch -d grafana-pcp-$(VER) -p1 --fuzz=0 < $$patch; done
+
 	# Go
 	cd grafana-pcp-$(VER) && go mod vendor -v
 	awk '$$2~/^v/ && $$4 != "indirect" {print "Provides: bundled(golang(" $$1 ")) = " substr($$2, 2)}' grafana-pcp-$(VER)/go.mod | \
@@ -19,7 +24,7 @@ grafana-pcp-vendor-$(VER).tar.xz: grafana-pcp-$(VER)/
 	cd grafana-pcp-$(VER) && yarn install --pure-lockfile
 	# Remove files with licensing issues
 	find grafana-pcp-$(VER) -type d -name 'node-notifier' -prune -exec rm -r {} \;
-	find grafana-pcp-$(VER) -name '*.exe' -delete
+	find grafana-pcp-$(VER) -type f -name '*.exe' -delete
 	# Remove not required packages
 	rm -r grafana-pcp-$(VER)/node_modules/puppeteer
 	./list_bundled_nodejs_packages.py grafana-pcp-$(VER)/ >> $@.manifest
@@ -30,14 +35,12 @@ grafana-pcp-vendor-$(VER).tar.xz: grafana-pcp-$(VER)/
 	# Create tarball
 	XZ_OPT=-9 tar cfJ $@ \
 		grafana-pcp-$(VER)/vendor \
-		$$(find grafana-pcp-$(VER) -type d -name "node_modules" -prune) \
+		grafana-pcp-$(VER)/node_modules \
 		grafana-pcp-$(VER)/vendor_jsonnet
 
-grafana-pcp-webpack-$(VER).tar.gz: grafana-pcp-$(VER)/
+grafana-pcp-webpack-$(VER).tar.gz: grafana-pcp-$(VER).tar.gz
 	cd grafana-pcp-$(VER) && \
-		yarn install --pure-lockfile && \
-		make dist-dashboards dist-frontend && \
-		chmod -R g-w,o-w dist
+		../build_frontend.sh
 
 	tar cfz $@ grafana-pcp-$(VER)/dist
 
