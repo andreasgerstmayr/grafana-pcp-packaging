@@ -14,7 +14,7 @@ end}
 
 Name:           grafana-pcp
 Version:        3.1.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 License:        ASL 2.0
 URL:            https://github.com/performancecopilot/grafana-pcp
@@ -184,6 +184,9 @@ export GOPATH=%{_builddir}
 
 
 %changelog
+* Thu Jul 22 2021 Fedora Release Engineering <releng@fedoraproject.org> - 3.1.0-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_35_Mass_Rebuild
+
 * Fri Jun 25 2021 Andreas Gerstmayr <agerstmayr@redhat.com> 3.1.0-1
 - update to 3.1.0 tagged upstream community sources, see CHANGELOG
 - remove unused cryptographic implementations
