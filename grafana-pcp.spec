@@ -24,7 +24,7 @@ end}
 
 Name:           grafana-pcp
 Version:        3.2.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 License:        ASL 2.0
 URL:            https://github.com/performancecopilot/grafana-pcp
@@ -198,6 +198,10 @@ export GOPATH=%{_builddir}
 
 
 %changelog
+* Sat Jun 18 2022 Robert-André Mauchin <zebob.m@gmail.com> - 3.2.0-3
+- Rebuilt for CVE-2022-1996, CVE-2022-24675, CVE-2022-28327, CVE-2022-27191,
+  CVE-2022-29526, CVE-2022-30629
+
 * Thu Jan 20 2022 Fedora Release Engineering <releng@fedoraproject.org> - 3.2.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_36_Mass_Rebuild
 
