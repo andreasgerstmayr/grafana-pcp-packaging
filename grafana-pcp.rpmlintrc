@@ -1,7 +1,6 @@
-addFilter("W: spelling-error %description -l en_US datasources -> .*")
-addFilter("W: spelling-error %description -l en_US pmseries -> .*")
-addFilter("W: spelling-error %description -l en_US bpftrace -> .*")
-addFilter("W: spelling-error %description -l en_US pmdabpftrace -> .*")
+addFilter("W: invalid-url Source1: grafana-pcp-vendor-")
+addFilter("W: invalid-url Source2: grafana-pcp-webpack-")
+addFilter("W: files-duplicate /var/lib/grafana/plugins/performancecopilot-pcp-app/module.js.LICENSE.txt")
+addFilter("W: files-duplicate /var/lib/grafana/plugins/performancecopilot-pcp-app/.*/pcp-logo.svg")
 
-addFilter("W: strange-permission build_frontend.sh 755")
-addFilter("W: strange-permission list_bundled_nodejs_packages.py 755")
+addFilter("W: obsolete-not-provided pcp-web")

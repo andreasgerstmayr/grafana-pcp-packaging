@@ -1,0 +1,378 @@
+From 51c9183dee84afb43c35bbb8e486062952571d45 Mon Sep 17 00:00:00 2001
+From: Andreas Gerstmayr <agerstmayr@redhat.com>
+Date: Thu, 7 Jul 2022 15:43:01 +0200
+Subject: [PATCH] Revert "all: rename plugin IDs from pcp-*-* to
+ performancecopilot-*-*"
+
+This partially reverts commit 70ca5cc307e231cea14281e1cd2268ae4f1f445c.
+
+diff --git a/Makefile b/Makefile
+index f2b58e7..2fba81f 100644
+--- a/Makefile
++++ b/Makefile
+@@ -107,13 +107,13 @@ test-ui-start-pod: ## Start PCP and Redis in a pod
+ 
+ test-ui-start-grafana-dist: ## Start Grafana with grafana-pcp from the dist/ folder
+ 	podman run --pod grafana-pcp-tests --name grafana-pcp-tests-grafana -d --replace \
+-		-e GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="performancecopilot-pcp-app,performancecopilot-redis-datasource,performancecopilot-vector-datasource,performancecopilot-bpftrace-datasource,performancecopilot-flamegraph-panel,performancecopilot-breadcrumbs-panel,performancecopilot-troubleshooting-panel" \
++		-e GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="performancecopilot-pcp-app,pcp-redis-datasource,pcp-vector-datasource,pcp-bpftrace-datasource,pcp-flamegraph-panel,pcp-breadcrumbs-panel,pcp-troubleshooting-panel" \
+ 		-v $$(pwd)/dist:/var/lib/grafana/plugins/performancecopilot-pcp-app \
+ 		$(GRAFANA_IMAGE)
+ 
+ test-ui-start-grafana-build: ## Start Grafana with grafana-pcp from build/performancecopilot-pcp-app-*.zip
+ 	podman run --pod grafana-pcp-tests --name grafana-pcp-tests-grafana -d --replace \
+-		-e GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="performancecopilot-pcp-app,performancecopilot-redis-datasource,performancecopilot-vector-datasource,performancecopilot-bpftrace-datasource,performancecopilot-flamegraph-panel,performancecopilot-breadcrumbs-panel,performancecopilot-troubleshooting-panel" \
++		-e GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="performancecopilot-pcp-app,pcp-redis-datasource,pcp-vector-datasource,pcp-bpftrace-datasource,pcp-flamegraph-panel,pcp-breadcrumbs-panel,pcp-troubleshooting-panel" \
+ 		-e GF_INSTALL_PLUGINS="/tmp/plugin.zip;performancecopilot-pcp-app" \
+ 		-v $$(pwd)/build/$$(basename build/performancecopilot-pcp-app-*.zip):/tmp/plugin.zip \
+ 		$(GRAFANA_IMAGE)
+diff --git a/cypress/integration/checklist.spec.ts b/cypress/integration/checklist.spec.ts
+index dd96757..7dd3744 100644
+--- a/cypress/integration/checklist.spec.ts
++++ b/cypress/integration/checklist.spec.ts
+@@ -3,7 +3,7 @@ describe('PCP Vector Checklist', () => {
+         cy.task('grafana:reset');
+         cy.login();
+         cy.enablePlugin();
+-        cy.addDatasource('performancecopilot-vector-datasource', 'PCP Vector data source');
++        cy.addDatasource('pcp-vector-datasource', 'PCP Vector data source');
+     });
+ 
+     beforeEach(() => {
+diff --git a/cypress/integration/datasources/redis.spec.ts b/cypress/integration/datasources/redis.spec.ts
+index 15be89b..5630611 100644
+--- a/cypress/integration/datasources/redis.spec.ts
++++ b/cypress/integration/datasources/redis.spec.ts
+@@ -3,7 +3,7 @@ describe('PCP Redis data source', () => {
+         cy.task('grafana:reset');
+         cy.login();
+         cy.enablePlugin();
+-        cy.addDatasource('performancecopilot-redis-datasource', 'PCP Redis data source');
++        cy.addDatasource('pcp-redis-datasource', 'PCP Redis data source');
+     });
+ 
+     beforeEach(() => {
+diff --git a/cypress/integration/datasources/vector.spec.ts b/cypress/integration/datasources/vector.spec.ts
+index d6e01de..a2ec2b1 100644
+--- a/cypress/integration/datasources/vector.spec.ts
++++ b/cypress/integration/datasources/vector.spec.ts
+@@ -3,7 +3,7 @@ describe('PCP Vector data source', () => {
+         cy.task('grafana:reset');
+         cy.login();
+         cy.enablePlugin();
+-        cy.addDatasource('performancecopilot-vector-datasource', 'PCP Vector data source');
++        cy.addDatasource('pcp-vector-datasource', 'PCP Vector data source');
+     });
+ 
+     beforeEach(() => {
+diff --git a/docs/installation.rst b/docs/installation.rst
+index 0e356ea..718e27f 100644
+--- a/docs/installation.rst
++++ b/docs/installation.rst
+@@ -37,6 +37,7 @@ Replace X.Y.Z with the version of grafana-pcp you wish to install.
+ 
+     $ wget https://github.com/performancecopilot/grafana-pcp/releases/download/vX.Y.Z/performancecopilot-pcp-app-X.Y.Z.zip
+     $ sudo unzip -d /var/lib/grafana/plugins performancecopilot-pcp-app-X.Y.Z.zip
++    $ sudo sed -i 's/;allow_loading_unsigned_plugins =/allow_loading_unsigned_plugins = performancecopilot-pcp-app,pcp-redis-datasource,pcp-vector-datasource,pcp-bpftrace-datasource,pcp-flamegraph-panel,pcp-breadcrumbs-panel,pcp-troubleshooting-panel/' /etc/grafana/grafana.ini
+     $ sudo systemctl restart grafana-server
+ 
+ 
+@@ -51,6 +52,7 @@ Replace X.Y.Z with the version of grafana-pcp you wish to install.
+ 
+     $ podman run \
+         -e GF_INSTALL_PLUGINS="https://github.com/performancecopilot/grafana-pcp/releases/download/vX.Y.Z/performancecopilot-pcp-app-X.Y.Z.zip;performancecopilot-pcp-app" \
++        -e GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="performancecopilot-pcp-app,pcp-redis-datasource,pcp-vector-datasource,pcp-bpftrace-datasource,pcp-flamegraph-panel,pcp-breadcrumbs-panel,pcp-troubleshooting-panel" \
+         -p 3000:3000 \
+         docker.io/grafana/grafana
+ 
+@@ -58,6 +60,7 @@ Replace X.Y.Z with the version of grafana-pcp you wish to install.
+ 
+     $ docker run \
+         -e GF_INSTALL_PLUGINS="https://github.com/performancecopilot/grafana-pcp/releases/download/vX.Y.Z/performancecopilot-pcp-app-X.Y.Z.zip;performancecopilot-pcp-app" \
++        -e GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS="performancecopilot-pcp-app,pcp-redis-datasource,pcp-vector-datasource,pcp-bpftrace-datasource,pcp-flamegraph-panel,pcp-breadcrumbs-panel,pcp-troubleshooting-panel" \
+         -p 3000:3000 \
+         grafana/grafana
+ 
+@@ -72,7 +75,7 @@ The `yarn package manager <https://yarnpkg.com>`_, `Go compiler <https://golang.
+     $ git clone https://github.com/performancecopilot/grafana-pcp.git
+     $ make build
+     $ sudo ln -s $(pwd) /var/lib/grafana/plugins
+-    $ sudo sed -i 's/;allow_loading_unsigned_plugins =/allow_loading_unsigned_plugins = performancecopilot-pcp-app,performancecopilot-redis-datasource,performancecopilot-vector-datasource,performancecopilot-bpftrace-datasource,performancecopilot-flamegraph-panel,performancecopilot-breadcrumbs-panel,performancecopilot-troubleshooting-panel/' /etc/grafana/grafana.ini
++    $ sudo sed -i 's/;allow_loading_unsigned_plugins =/allow_loading_unsigned_plugins = performancecopilot-pcp-app,pcp-redis-datasource,pcp-vector-datasource,pcp-bpftrace-datasource,pcp-flamegraph-panel,pcp-breadcrumbs-panel,pcp-troubleshooting-panel/' /etc/grafana/grafana.ini
+     $ sudo systemctl restart grafana-server
+ 
+ To list all available Makefile targets, run ``make help``.
+diff --git a/src/dashboards/redis/preview/pcp-redis-metric-preview-graph.jsonnet b/src/dashboards/redis/preview/pcp-redis-metric-preview-graph.jsonnet
+index f35bd57..e9d315c 100644
+--- a/src/dashboards/redis/preview/pcp-redis-metric-preview-graph.jsonnet
++++ b/src/dashboards/redis/preview/pcp-redis-metric-preview-graph.jsonnet
+@@ -11,7 +11,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-redis-datasource',
++    'pcp-redis-datasource',
+     'PCP Redis',
+     hide='variable',
+   )
+diff --git a/src/dashboards/redis/preview/pcp-redis-metric-preview-table.jsonnet b/src/dashboards/redis/preview/pcp-redis-metric-preview-table.jsonnet
+index 4f7d36d..a8ff5ca 100644
+--- a/src/dashboards/redis/preview/pcp-redis-metric-preview-table.jsonnet
++++ b/src/dashboards/redis/preview/pcp-redis-metric-preview-table.jsonnet
+@@ -11,7 +11,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-redis-datasource',
++    'pcp-redis-datasource',
+     'PCP Redis',
+     hide='variable',
+   )
+diff --git a/src/dashboards/vector/checklist/_breadcrumbspanel.libsonnet b/src/dashboards/vector/checklist/_breadcrumbspanel.libsonnet
+index 2505142..34f465d 100644
+--- a/src/dashboards/vector/checklist/_breadcrumbspanel.libsonnet
++++ b/src/dashboards/vector/checklist/_breadcrumbspanel.libsonnet
+@@ -18,7 +18,7 @@
+     items=[],
+   ):: {
+     title: title,
+-    type: 'performancecopilot-breadcrumbs-panel',
++    type: 'pcp-breadcrumbs-panel',
+     options: {
+       items: items,
+     },
+diff --git a/src/dashboards/vector/checklist/_troubleshootingpanel.libsonnet b/src/dashboards/vector/checklist/_troubleshootingpanel.libsonnet
+index bf49b5c..36d1571 100644
+--- a/src/dashboards/vector/checklist/_troubleshootingpanel.libsonnet
++++ b/src/dashboards/vector/checklist/_troubleshootingpanel.libsonnet
+@@ -17,7 +17,7 @@
+       unit=null
+     ):: {
+       title: title,
+-      type: 'performancecopilot-troubleshooting-panel',
++      type: 'pcp-troubleshooting-panel',
+       datasource: datasource,
+       options: {
+         troubleshooting: troubleshooting,
+diff --git a/src/dashboards/vector/checklist/checklist.libsonnet b/src/dashboards/vector/checklist/checklist.libsonnet
+index b7bab8b..ffc96a5 100644
+--- a/src/dashboards/vector/checklist/checklist.libsonnet
++++ b/src/dashboards/vector/checklist/checklist.libsonnet
+@@ -231,7 +231,7 @@ local grafana = import 'grafonnet/grafana.libsonnet';
+       .addTemplate(
+         grafana.template.datasource(
+           'datasource',
+-          'performancecopilot-vector-datasource',
++          'pcp-vector-datasource',
+           'PCP Vector',
+         )
+       )
+diff --git a/src/datasources/bpftrace/dashboards/pcp-bpftrace-flame-graphs.jsonnet b/src/datasources/bpftrace/dashboards/pcp-bpftrace-flame-graphs.jsonnet
+index cfda5b7..531cf16 100644
+--- a/src/datasources/bpftrace/dashboards/pcp-bpftrace-flame-graphs.jsonnet
++++ b/src/datasources/bpftrace/dashboards/pcp-bpftrace-flame-graphs.jsonnet
+@@ -5,7 +5,7 @@ local flameGraph(
+   datasource=null,
+       ) = {
+   title: title,
+-  type: 'performancecopilot-flamegraph-panel',
++  type: 'pcp-flamegraph-panel',
+   datasource: datasource,
+ 
+   _nextTarget:: 0,
+@@ -30,14 +30,14 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'bpftrace_datasource',
+-    'performancecopilot-bpftrace-datasource',
++    'pcp-bpftrace-datasource',
+     'PCP bpftrace',
+   )
+ )
+ .addTemplate(
+   grafana.template.datasource(
+     'vector_datasource',
+-    'performancecopilot-vector-datasource',
++    'pcp-vector-datasource',
+     'PCP Vector',
+   )
+ )
+diff --git a/src/datasources/bpftrace/dashboards/pcp-bpftrace-system-analysis.jsonnet b/src/datasources/bpftrace/dashboards/pcp-bpftrace-system-analysis.jsonnet
+index 428f71b..64dfffd 100644
+--- a/src/datasources/bpftrace/dashboards/pcp-bpftrace-system-analysis.jsonnet
++++ b/src/datasources/bpftrace/dashboards/pcp-bpftrace-system-analysis.jsonnet
+@@ -13,7 +13,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-bpftrace-datasource',
++    'pcp-bpftrace-datasource',
+     'PCP bpftrace',
+   )
+ )
+diff --git a/src/datasources/bpftrace/plugin.json b/src/datasources/bpftrace/plugin.json
+index c627ef2..5015a51 100644
+--- a/src/datasources/bpftrace/plugin.json
++++ b/src/datasources/bpftrace/plugin.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "PCP bpftrace",
+-    "id": "performancecopilot-bpftrace-datasource",
++    "id": "pcp-bpftrace-datasource",
+     "type": "datasource",
+     "category": "other",
+     "metrics": true,
+diff --git a/src/datasources/redis/dashboards/pcp-redis-host-overview.jsonnet b/src/datasources/redis/dashboards/pcp-redis-host-overview.jsonnet
+index 2687ffc..960f9a8 100644
+--- a/src/datasources/redis/dashboards/pcp-redis-host-overview.jsonnet
++++ b/src/datasources/redis/dashboards/pcp-redis-host-overview.jsonnet
+@@ -10,7 +10,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-redis-datasource',
++    'pcp-redis-datasource',
+     'PCP Redis',
+   )
+ )
+diff --git a/src/datasources/redis/dashboards/pcp-redis-mssql-server.jsonnet b/src/datasources/redis/dashboards/pcp-redis-mssql-server.jsonnet
+index c69d8e8..f610731 100644
+--- a/src/datasources/redis/dashboards/pcp-redis-mssql-server.jsonnet
++++ b/src/datasources/redis/dashboards/pcp-redis-mssql-server.jsonnet
+@@ -10,7 +10,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-redis-datasource',
++    'pcp-redis-datasource',
+     'PCP Redis',
+   )
+ )
+diff --git a/src/datasources/redis/plugin.json b/src/datasources/redis/plugin.json
+index f1450a8..f3732ab 100644
+--- a/src/datasources/redis/plugin.json
++++ b/src/datasources/redis/plugin.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "PCP Redis",
+-    "id": "performancecopilot-redis-datasource",
++    "id": "pcp-redis-datasource",
+     "type": "datasource",
+     "category": "tsdb",
+     "metrics": true,
+diff --git a/src/datasources/vector/dashboards/pcp-vector-bcc-overview.jsonnet b/src/datasources/vector/dashboards/pcp-vector-bcc-overview.jsonnet
+index 96454cc..34533fc 100644
+--- a/src/datasources/vector/dashboards/pcp-vector-bcc-overview.jsonnet
++++ b/src/datasources/vector/dashboards/pcp-vector-bcc-overview.jsonnet
+@@ -13,7 +13,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-vector-datasource',
++    'pcp-vector-datasource',
+     'PCP Vector',
+   )
+ )
+diff --git a/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups1.jsonnet b/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups1.jsonnet
+index 0e7d921..db8fc36 100644
+--- a/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups1.jsonnet
++++ b/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups1.jsonnet
+@@ -13,7 +13,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-vector-datasource',
++    'pcp-vector-datasource',
+     'PCP Vector',
+   )
+ )
+diff --git a/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups2.jsonnet b/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups2.jsonnet
+index d75f6ad..0c07200 100644
+--- a/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups2.jsonnet
++++ b/src/datasources/vector/dashboards/pcp-vector-container-overview-cgroups2.jsonnet
+@@ -13,7 +13,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-vector-datasource',
++    'pcp-vector-datasource',
+     'PCP Vector',
+   )
+ )
+diff --git a/src/datasources/vector/dashboards/pcp-vector-host-overview.jsonnet b/src/datasources/vector/dashboards/pcp-vector-host-overview.jsonnet
+index 5174a28..d9b10b9 100644
+--- a/src/datasources/vector/dashboards/pcp-vector-host-overview.jsonnet
++++ b/src/datasources/vector/dashboards/pcp-vector-host-overview.jsonnet
+@@ -13,7 +13,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-vector-datasource',
++    'pcp-vector-datasource',
+     'PCP Vector',
+   )
+ )
+diff --git a/src/datasources/vector/dashboards/pcp-vector-mssql-server.jsonnet b/src/datasources/vector/dashboards/pcp-vector-mssql-server.jsonnet
+index 979eea9..60771cc 100644
+--- a/src/datasources/vector/dashboards/pcp-vector-mssql-server.jsonnet
++++ b/src/datasources/vector/dashboards/pcp-vector-mssql-server.jsonnet
+@@ -10,7 +10,7 @@ grafana.dashboard.new(
+ .addTemplate(
+   grafana.template.datasource(
+     'datasource',
+-    'performancecopilot-vector-datasource',
++    'pcp-vector-datasource',
+     'PCP Vector',
+   )
+ )
+diff --git a/src/datasources/vector/plugin.json b/src/datasources/vector/plugin.json
+index a28e3f4..ae55549 100644
+--- a/src/datasources/vector/plugin.json
++++ b/src/datasources/vector/plugin.json
+@@ -1,6 +1,6 @@
+ {
+     "name": "PCP Vector",
+-    "id": "performancecopilot-vector-datasource",
++    "id": "pcp-vector-datasource",
+     "type": "datasource",
+     "category": "tsdb",
+     "metrics": true,
+diff --git a/src/panels/breadcrumbs/plugin.json b/src/panels/breadcrumbs/plugin.json
+index 9f5a272..9508b39 100644
+--- a/src/panels/breadcrumbs/plugin.json
++++ b/src/panels/breadcrumbs/plugin.json
+@@ -1,7 +1,7 @@
+ {
+     "type": "panel",
+     "name": "PCP Breadcrumbs",
+-    "id": "performancecopilot-breadcrumbs-panel",
++    "id": "pcp-breadcrumbs-panel",
+     "skipDataQuery": true,
+     "info": {
+         "description": "Grafana Panel for displaying breadcrumbs navigation in PCP checklist overview dashboards",
+diff --git a/src/panels/flamegraph/plugin.json b/src/panels/flamegraph/plugin.json
+index 15fa840..e4aa474 100644
+--- a/src/panels/flamegraph/plugin.json
++++ b/src/panels/flamegraph/plugin.json
+@@ -1,7 +1,7 @@
+ {
+     "type": "panel",
+     "name": "PCP Flame Graph",
+-    "id": "performancecopilot-flamegraph-panel",
++    "id": "pcp-flamegraph-panel",
+     "info": {
+         "description": "Grafana Panel for displaying Flame Graphs",
+         "logos": {
+diff --git a/src/panels/troubleshooting/plugin.json b/src/panels/troubleshooting/plugin.json
+index b58b750..d270350 100644
+--- a/src/panels/troubleshooting/plugin.json
++++ b/src/panels/troubleshooting/plugin.json
+@@ -1,7 +1,7 @@
+ {
+     "type": "panel",
+     "name": "PCP Troubleshooting Panel",
+-    "id": "performancecopilot-troubleshooting-panel",
++    "id": "pcp-troubleshooting-panel",
+     "info": {
+         "description": "Grafana Panel for displaying time series graphs with troubleshooting information in PCP Checklist dashboards",
+         "logos": {
