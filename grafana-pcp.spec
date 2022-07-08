@@ -16,7 +16,7 @@ end}
 
 Name:           grafana-pcp
 Version:        5.0.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 License:        ASL 2.0
 URL:            https://github.com/performancecopilot/grafana-pcp
@@ -53,7 +53,7 @@ BuildRequires:  make, nodejs >= 1:14, yarnpkg, golang-github-google-jsonnet
 
 %global         install_dir %{_sharedstatedir}/grafana/plugins/performancecopilot-pcp-app
 
-Requires:       grafana >= 7.5.9
+Requires:       grafana >= 8.5.6
 Suggests:       pcp >= 5.2.2
 Suggests:       redis >= 5.0.0
 Suggests:       bpftrace >= 0.9.2
@@ -176,6 +176,9 @@ yarn test
 
 
 %changelog
+* Fri Jul 08 2022 Andreas Gerstmayr <agerstmayr@redhat.com> 5.0.0-2
+- bump required Grafana version to 8.5.6
+
 * Thu Jul 07 2022 Andreas Gerstmayr <agerstmayr@redhat.com> 5.0.0-1
 - update to 5.0.0 tagged upstream community sources, see CHANGELOG
 - reverted the breaking change (change of internal plugin IDs) of upstream v5.0.0,
