@@ -16,7 +16,7 @@ end}
 
 Name:           grafana-pcp
 Version:        5.0.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 Summary:        Performance Co-Pilot Grafana Plugin
 License:        ASL 2.0
 URL:            https://github.com/performancecopilot/grafana-pcp
@@ -191,7 +191,7 @@ yarn test
 
 
 %changelog
-* Mon Sep 19 2022 Andreas Gerstmayr <agerstmayr@redhat.com> 5.0.0-3
+* Mon Sep 19 2022 Andreas Gerstmayr <agerstmayr@redhat.com> 5.0.0-4
 - install plugin in /usr/share and create symlink from /var using
   systemd-tmpfiles to work on rpm-ostree based distributions
 - drop makefile in favor of create_bundles.sh script
