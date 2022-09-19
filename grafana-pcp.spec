@@ -31,13 +31,12 @@ Source1:        grafana-pcp-vendor-%{version}-1.tar.xz
 # lags behind the NVR of this package.
 Source2:        grafana-pcp-webpack-%{version}-1.tar.gz
 %endif
-Source3:        Makefile
+Source3:        create_bundles.sh
 Source4:        build_frontend.sh
 Source5:        list_bundled_nodejs_packages.py
 Source6:        create_bundles_in_container.sh
 
 Patch1:         0001-remove-unused-frontend-crypto.patch
-Patch2:         0002-Revert-all-rename-plugin-IDs-from-pcp-to-performance.patch
 
 # Intersection of go_arches and nodejs_arches
 ExclusiveArch:  %{grafanapcp_arches}
@@ -130,7 +129,6 @@ bpftrace scripts from pmdabpftrace(1), as well as several dashboards.
 %endif
 
 %patch1 -p1
-%patch2 -p1
 
 
 %build
