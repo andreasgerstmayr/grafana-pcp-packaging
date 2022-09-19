@@ -41,17 +41,20 @@ Patch1:         0001-remove-unused-frontend-crypto.patch
 # Intersection of go_arches and nodejs_arches
 ExclusiveArch:  %{grafanapcp_arches}
 
-BuildRequires:  systemd-rpm-macros, golang, go-srpm-macros
-%if 0%{?fedora} >= 31
+BuildRequires:  systemd-rpm-macros
+BuildRequires:  golang
+BuildRequires:  go-srpm-macros
 BuildRequires:  go-rpm-macros
-%endif
 
 %if %{compile_frontend}
 BuildRequires:  make, nodejs >= 1:14, yarnpkg, golang-github-google-jsonnet
 %endif
 
-%global         install_dir %{_sharedstatedir}/grafana/plugins/performancecopilot-pcp-app
+%global         plugin_dir  %{_sharedstatedir}/grafana/plugins/performancecopilot-pcp-app
+%global         install_dir %{_datadir}/performancecopilot-pcp-app
 
+# grafana-pcp requires systemd-tmpfiles
+%{?systemd_requires}
 Requires:       grafana >= 8.5.6
 Suggests:       pcp >= 5.2.2
 Suggests:       redis >= 5.0.0
@@ -145,12 +148,23 @@ bpftrace scripts from pmdabpftrace(1), as well as several dashboards.
 install -d -m 755 %{buildroot}/%{install_dir}
 cp -a dist/* %{buildroot}/%{install_dir}
 
+# On rpm-ostree based distributions, /var is exclusively reserved for application state.
+# Grafana also supports installing plugins through the UI, therefore this RPM installs
+# its content to /usr/share, and creates a symlink from /var to it using systemd-tmpfiles.
+mkdir -p %{buildroot}%{_tmpfilesdir}
+echo "L+ %{plugin_dir} - - - - %{install_dir}" > %{buildroot}%{_tmpfilesdir}/%{name}.conf
+
 %postun
 # uninstall of old package
 %systemd_postun_with_restart grafana-server.service
 
 %posttrans
 # install or upgrade of new package
+
+# create symlink after the previous package got removed
+%tmpfiles_create %_tmpfilesdir/%{name}.conf
+
+# restart Grafana after the previous package got removed
 if [ -x /usr/bin/systemctl ]; then
   /usr/bin/systemctl try-restart grafana-server.service || :
 fi
@@ -168,12 +182,22 @@ yarn test
 
 %files
 %{install_dir}
+%{_tmpfilesdir}/%{name}.conf
+# remove symlink when package is uninstalled
+%ghost %{plugin_dir}
 
 %license LICENSE NOTICE
 %doc README.md
 
 
 %changelog
+* Mon Sep 19 2022 Andreas Gerstmayr <agerstmayr@redhat.com> 5.0.0-3
+- install plugin in /usr/share and create symlink from /var using
+  systemd-tmpfiles to work on rpm-ostree based distributions
+- drop makefile in favor of create_bundles.sh script
+- replace plugin id patch with sed to catch future usages of the new
+  upstream plugin ids
+
 * Thu Jul 21 2022 Fedora Release Engineering <releng@fedoraproject.org> - 5.0.0-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_37_Mass_Rebuild
 

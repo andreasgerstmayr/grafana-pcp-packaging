@@ -1,6 +1,6 @@
 addFilter("W: invalid-url Source1: grafana-pcp-vendor-")
 addFilter("W: invalid-url Source2: grafana-pcp-webpack-")
-addFilter("W: files-duplicate /var/lib/grafana/plugins/performancecopilot-pcp-app/module.js.LICENSE.txt")
-addFilter("W: files-duplicate /var/lib/grafana/plugins/performancecopilot-pcp-app/.*/pcp-logo.svg")
+addFilter("W: files-duplicate /usr/share/performancecopilot-pcp-app/module.js.LICENSE.txt")
+addFilter("W: files-duplicate /usr/share/performancecopilot-pcp-app/.*/pcp-logo.svg")
 
 addFilter("W: obsolete-not-provided pcp-web")
